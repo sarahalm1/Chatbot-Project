@@ -8,9 +8,7 @@ services:
       - chromadb_data:/chroma/chroma
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
+    image: ${DOCKERHUB_NAMESPACE}/stage7-backend:latest
     restart: unless-stopped
     env_file:
       - .env
@@ -20,7 +18,7 @@ services:
       chromadb:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:5000/openapi.json > /dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fSs http://127.0.0.1:5000/openapi.json > /dev/null || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -30,9 +28,7 @@ services:
       - ./pdf_store:/app/pdf_store
 
   chatbot:
-    build:
-      context: .
-      dockerfile: Dockerfile.chatbot
+    image: ${DOCKERHUB_NAMESPACE}/stage7-chatbot:latest
     restart: unless-stopped
     environment:
       BACKEND_URL: http://backend:5000
