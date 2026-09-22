@@ -1,6 +1,9 @@
 locals {
-  db_administrator_login    = "Sarah"
-  db_administrator_password = "sarah123"
+  db_administrator_login = "Sarah"
+}
+variable "db_administrator_password" {
+  type      = string
+  sensitive = true
 }
 # reference: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server
 resource "azurerm_postgresql_flexible_server" "db" {
@@ -10,7 +13,7 @@ resource "azurerm_postgresql_flexible_server" "db" {
   version                       = "17"
   public_network_access_enabled = true
   administrator_login           = local.db_administrator_login
-  administrator_password        = local.db_administrator_password
+  administrator_password        = var.db_administrator_password
   zone                          = "1"
 
   storage_mb   = 32768
@@ -45,5 +48,6 @@ output "db_administrator_name" {
 
 output "db_administrator_password" {
   description = "DB Administrator Password"
-  value       = local.db_administrator_password
+  value       = var.db_administrator_password
+  sensitive = true
 }
